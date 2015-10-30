@@ -18,11 +18,14 @@
         - jasper-devel
         - libpng-devel
 
-    - name: Download NetCDF
-      command: creates=~/netcdf-4.3.3.1.tar.gz chdir=~/ wget -T 40  ftp://ftp.unidata.ucar.edu/pub/netcdf/netcdf-4.3.3.1.tar.gz
+    #
+    # we can use the built in netcdf since we are compiling with gfortran, if we switch to intel or pgi we need to compile it ourselves
 
-    - name: Download NetCDF Fortran
-      command: creates=~/netcdf-fortran-4.4.2.tar.gz chdir=~/ wget -T 40  ftp://ftp.unidata.ucar.edu/pub/netcdf/netcdf-fortran-4.4.2.tar.gz
+    #- name: Download NetCDF
+    #  command: creates=~/netcdf-4.3.3.1.tar.gz chdir=~/ wget -T 40  ftp://ftp.unidata.ucar.edu/pub/netcdf/netcdf-4.3.3.1.tar.gz
+
+    #- name: Download NetCDF Fortran
+    #  command: creates=~/netcdf-fortran-4.4.2.tar.gz chdir=~/ wget -T 40  ftp://ftp.unidata.ucar.edu/pub/netcdf/netcdf-fortran-4.4.2.tar.gz
 
     - name: Download WRF
       command: creates=~/WRFV3.7.1.TAR.gz chdir=~/ wget -T 40  http://www2.mmm.ucar.edu/wrf/src/WRFV3.7.1.TAR.gz
