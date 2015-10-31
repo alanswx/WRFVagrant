@@ -12,20 +12,41 @@
       with_items:
         - vim
         - gcc-gfortran
-        - netcdf
-        - netcdf-devel
         - jasper
         - jasper-devel
         - libpng-devel
 
-    #
-    # we can use the built in netcdf since we are compiling with gfortran, if we switch to intel or pgi we need to compile it ourselves
+    - name: set NetCDF environment variable
+      lineinfile: dest=/etc/environment line="NETCDF=/usr/local"
 
-    #- name: Download NetCDF
-    #  command: creates=~/netcdf-4.3.3.1.tar.gz chdir=~/ wget -T 40  ftp://ftp.unidata.ucar.edu/pub/netcdf/netcdf-4.3.3.1.tar.gz
+    - name: set FC environment variable
+      lineinfile: dest=/etc/environment line="FC=gfortran"
+    - name: set F77 environment variable
+      lineinfile: dest=/etc/environment line="F77=gfortran"
 
-    #- name: Download NetCDF Fortran
-    #  command: creates=~/netcdf-fortran-4.4.2.tar.gz chdir=~/ wget -T 40  ftp://ftp.unidata.ucar.edu/pub/netcdf/netcdf-fortran-4.4.2.tar.gz
+    - name: Download NetCDF
+      command: creates=~/netcdf-4.3.3.1.tar.gz chdir=~/ wget -T 40  ftp://ftp.unidata.ucar.edu/pub/netcdf/netcdf-4.3.3.1.tar.gz
+
+    - name: untar NetCDF
+      command: creates=~/netcdf-4.3.3.1 chdir=~/ tar zxf netcdf-4.3.3.1.tar.gz
+
+    - name: configure NetCDF
+      command: creates=~/netcdf-4.3.3.1/Makefile chdir=~/netcdf-4.3.3.1/ ./configure  --disable-dap --disable-netcdf-4 --enable-shared=no
+
+    - name: install NetCDF
+      command: creates=/usr/local/lib/libnetcdf.a chdir=~/netcdf-4.3.3.1/ make install
+
+    - name: Download NetCDF Fortran
+      command: creates=~/netcdf-fortran-4.4.2.tar.gz chdir=~/ wget -T 40  ftp://ftp.unidata.ucar.edu/pub/netcdf/netcdf-fortran-4.4.2.tar.gz
+
+    - name: untar NetCDF Fortran
+      command: creates=~/netcdf-fortran-4.4.2 chdir=~/ tar zxf netcdf-fortran-4.4.2.tar.gz 
+
+    - name: configure NetCDF fortran
+      command: creates=~/netcdf-fortran-4.4.2/Makefile chdir=~/netcdf-fortran-4.4.2/ ./configure  --enable-shared=no
+
+    - name: install NetCDF Fortran
+      command: creates=/usr/local/lib/libnetcdff.a  chdir=~/netcdf-fortran-4.4.2/ make install
 
     - name: Download WRF
       command: creates=~/WRFV3.7.1.TAR.gz chdir=~/ wget -T 40  http://www2.mmm.ucar.edu/wrf/src/WRFV3.7.1.TAR.gz
@@ -41,10 +62,6 @@
 
     - name: Download WPS Data 4 Jan 
       command: creates=~/real4jan00.tar.gz chdir=~/ wget -T 40  http://www2.mmm.ucar.edu/wrf/src/data/real4jan00.tar.gz
-
-    - name: set NetCDF environment variable
-      #lineinfile: dest=/etc/environment line="NETCDF=/usr/local"
-      lineinfile: dest=/etc/environment line="NETCDF=/usr/"
 
     - name: set JASPER environment variable
       lineinfile: dest=/etc/environment line="JASPERLIB=/usr/lib/"
